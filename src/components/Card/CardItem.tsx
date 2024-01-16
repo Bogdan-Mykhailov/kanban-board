@@ -4,9 +4,14 @@ import { Card } from 'antd';
 
 const { Meta } = Card;
 
+const card = {
+  width: 300,
+  marginBottom: 10
+}
+
 export const CardItem: React.FC = () => (
   <Card
-    style={{ width: 300 }}
+    style={card}
     actions={[
       <EditOutlined key="edit" />,
       <DeleteOutlined key="delete" />
