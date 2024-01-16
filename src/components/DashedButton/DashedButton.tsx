@@ -1,6 +1,8 @@
 import {Button} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import {CSSProperties} from "react";
+import {CSSProperties, FC} from "react";
+import {JSX} from "react/jsx-runtime";
+import IntrinsicAttributes = JSX.IntrinsicAttributes;
 
 const dashedButton = {
   width: 298,
@@ -11,9 +13,13 @@ const icon: CSSProperties = {
   color: '#d9d9d9'
 }
 
-export const DashedButton = () => {
+interface Props extends IntrinsicAttributes {
+  onClick: () => void;
+}
+
+export const DashedButton: FC<Props> = ({ onClick }) => {
   return (
-    <Button type="dashed" style={dashedButton}>
+    <Button onClick={onClick} type="dashed" style={dashedButton}>
       <PlusOutlined style={icon} />
     </Button>
   );
