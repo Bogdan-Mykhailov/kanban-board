@@ -21,7 +21,7 @@ export const MainHeader = () => {
   return (
     <Header style={headerStyle}>
       <Avatar shape="square" size={48} src={logo} />
-      <h2>boardName</h2>
+      <h2>title</h2>
     </Header>
   );
 };
