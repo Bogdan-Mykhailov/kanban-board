@@ -1,26 +1,25 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode} from 'react';
 import {Modal} from 'antd';
 import {DashedButton} from "../DashedButton/DashedButton.tsx";
 
 interface Props {
   children: ReactNode;
   title: string;
+  showModal: () => void
+  handleOk: () => void
+  handleCancel: () => void
+  isModalOpen: boolean
 }
 
-export const MainModal: React.FC<Props> = ({children, title}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+export const MainModal: React.FC<Props> = (
+  {
+    children,
+    title,
+    showModal,
+    isModalOpen,
+    handleCancel,
+    handleOk
+  }) => {
 
   return (
     <>

@@ -38,8 +38,15 @@ export const boardListWrapper: CSSProperties = {
 
 export const goBack: CSSProperties = {
   position: 'absolute',
-  left: 180,
-  top: 110,
+  left: -50,
+  top: 6,
   fontSize: '28px',
   color: '#1890ff'
+}
+
+export const menuWrapper: CSSProperties = {
+  position: 'relative',
+  width: '75%',
+  display: 'flex',
+  marginBottom: '40px'
 }

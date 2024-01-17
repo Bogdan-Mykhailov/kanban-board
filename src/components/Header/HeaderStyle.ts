@@ -12,5 +12,5 @@ export const headerStyle: CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   flexDirection: 'row',
-  cursor: 'pointer'
+  cursor: 'pointer',
 };

@@ -1,21 +1,28 @@
-import React from 'react';
+import {FC} from 'react';
 import {DeleteOutlined, EditOutlined, } from '@ant-design/icons';
 import { Card } from 'antd';
 import {card} from "./CardItemStyle.ts";
 
 const { Meta } = Card;
 
-export const CardItem: React.FC = () => (
+interface Props {
+  title: string;
+  description: string;
+  onUpdateCard: () => void
+  onDeleteCard: () => void
+}
+
+export const CardItem: FC<Props> = ({title, description, onUpdateCard, onDeleteCard}) => (
   <Card
     style={card}
     actions={[
-      <EditOutlined key="edit" />,
-      <DeleteOutlined key="delete" />
+      <EditOutlined onClick={onUpdateCard} key="edit" />,
+      <DeleteOutlined onClick={onDeleteCard} key="delete" />
     ]}
   >
     <Meta
-      title="Card title"
-      description="This is the description"
+      title={title}
+      description={description}
     />
   </Card>
 );
