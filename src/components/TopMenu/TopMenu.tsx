@@ -1,14 +1,22 @@
-import { Input } from 'antd';
+import {Input} from 'antd';
 import {topMenu} from "./TopMenuStyle.ts";
+import {FC} from "react";
 
-const { Search } = Input;
+const {Search} = Input;
 
-export const TopMenu = () => (
+interface Props {
+  onSearch: (inputValue: string) => void;
+}
+
+export const TopMenu: FC<Props> = ({onSearch}) => {
+  return (
     <Search
       placeholder="Enter a board name here..."
       enterButton="Load"
       size="large"
       loading={false}
       style={topMenu}
+      onSearch={onSearch}
     />
-);
+  );
+};

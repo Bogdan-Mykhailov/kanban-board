@@ -14,21 +14,23 @@ export const App = () => {
   const [boards, setBoards] = useState<GetAllBoardsModel[]>();
   const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
 
-
   useEffect(() => {
     handleGetAllBoards()
   }, []);
 
   const handleGetAllBoards = async () => {
-    const res = await boardApi.getAllBoards()
-
-    setBoards(res)
+    const res = await boardApi.getAllBoards();
+    setBoards(res);
   }
 
   const handleBoardSelect = (boardId: string) => {
-    const selected = boards?.find((board) => board.id === boardId) || null;
+    const selected = boards && boards?.filter((board) => board._id === boardId)[0] || null;
+    setSelectedBoard(selected);
+  }
 
-    setSelectedBoard(selected)
+  const handleSearch = (inputValue: string) => {
+    const filtered = boards && boards.find(board => board.name.toLowerCase().includes(inputValue.toLowerCase())) || null
+    setSelectedBoard(filtered);
   }
 
   const handleGoBack = () => {
@@ -38,12 +40,11 @@ export const App = () => {
   return (
     <>
       <Layout style={layoutStyle}>
-        <MainHeader onGoBack={handleGoBack}/>
+        <MainHeader onGoBack={handleGoBack} selectedBoard={selectedBoard}/>
 
         {selectedBoard &&
           <LeftOutlined style={goBack} onClick={handleGoBack}/>}
-
-        <TopMenu/>
+        <TopMenu onSearch={handleSearch}/>
         {
           selectedBoard
             ? <Board/>

@@ -12,7 +12,6 @@ interface Props {
 }
 
 export const BoardList: FC<Props> = ({boards, onBoardSelect}) => {
-
   return (
     <Layout style={innerLayout}>
       <div style={boardListWrapper}>
@@ -21,7 +20,7 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect}) => {
           style={list}
           dataSource={boards}
           renderItem={(board: GetAllBoardsModel) => (
-            <List.Item onClick={() => onBoardSelect(board.id)} style={listItem} key={board.id}>
+            <List.Item onClick={() => onBoardSelect(board._id)} style={listItem} key={board._id}>
               {board.name}
             </List.Item>)}
         />

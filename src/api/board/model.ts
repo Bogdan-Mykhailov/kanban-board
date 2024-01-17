@@ -5,7 +5,7 @@ interface ColumnsType {
 }
 
 export interface GetAllBoardsModel {
-  id: string,
+  _id: string,
   name: string,
   columns: ColumnsType
 }
