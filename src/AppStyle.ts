@@ -1,13 +1,5 @@
 import {CSSProperties} from "react";
 
-export const layoutStyle = {
-  overflow: 'hidden',
-  width: '100vw',
-  height: '100vh',
-  alignItems: 'center',
-  paddingBottom: '40px'
-};
-
 export const innerLayout: CSSProperties = {
   borderRadius: 8,
   width: '75%',
@@ -17,17 +9,37 @@ export const innerLayout: CSSProperties = {
   justifyContent: "spaceBetween",
 };
 
-export const column: CSSProperties = {
-  width: '100%',
-  flexDirection: "column",
-  display: 'flex',
-  alignItems: "center"
+export const layoutStyle = {
+  overflow: 'hidden',
+  width: '100vw',
+  height: '100vh',
+  alignItems: 'center',
+  paddingBottom: '40px'
 };
 
-export const cardWrapper: CSSProperties = {
-  overflow: 'scroll',
-  width: '100%',
+export const list: CSSProperties = {
+  width: '300px',
+  height: '100%'
+};
+
+export const listItem: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  cursor: 'pointer'
+};
+
+export const boardListWrapper: CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center'
+  height: '100%',
+  justifyContent: "space-between"
+};
+
+export const goBack: CSSProperties = {
+  position: 'absolute',
+  left: 180,
+  top: 110,
+  fontSize: '28px',
+  color: '#1890ff'
 }

@@ -1,14 +1,9 @@
-import React from 'react';
 import { Input } from 'antd';
+import {topMenu} from "./TopMenuStyle.ts";
 
 const { Search } = Input;
 
-const topMenu = {
-  width: '75%',
-  marginBottom: '40px'
-}
-
-export const TopMenu: React.FC = () => (
+export const TopMenu = () => (
     <Search
       placeholder="Enter a board name here..."
       enterButton="Load"

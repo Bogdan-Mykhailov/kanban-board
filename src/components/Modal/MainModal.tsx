@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { Input, Modal} from 'antd';
-import TextArea from "antd/lib/input/TextArea";
+import React, {ReactNode, useState} from 'react';
+import {Modal} from 'antd';
 import {DashedButton} from "../DashedButton/DashedButton.tsx";
 
-export const MainModal: React.FC = () => {
+interface Props {
+  children: ReactNode;
+  title: string;
+}
+
+export const MainModal: React.FC<Props> = ({children, title}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -18,25 +22,16 @@ export const MainModal: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const input = {
-    marginBottom: 10
-  }
-
-
-  const [value, setValue] = useState('');
-
   return (
     <>
       <DashedButton onClick={showModal} />
-      <Modal title="Create task" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <Input placeholder="Add title" style={input}/>
-
-        <TextArea
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="Add description"
-          autoSize={{ minRows: 3, maxRows: 5 }}
-        />
+      <Modal
+        title={title}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        {children}
       </Modal>
     </>
   );

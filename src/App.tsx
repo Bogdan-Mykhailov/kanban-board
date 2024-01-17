@@ -2,20 +2,22 @@ import './AppStyle.ts'
 import {TopMenu} from "./components/TopMenu/TopMenu.tsx";
 import Layout from "antd/lib/layout/layout";
 import {MainHeader} from "./components/Header/Header.tsx";
-import {innerLayout, layoutStyle} from "./AppStyle.ts";
-import {CSSProperties, useEffect, useState} from "react";
+import {goBack, layoutStyle} from "./AppStyle.ts";
+import {useEffect, useState} from "react";
 import {boardApi} from "./api/board/board.ts";
 import {GetAllBoardsModel} from "./api/board/model.ts";
-import {List} from "antd";
-import {DashedButton} from "./components/DashedButton/DashedButton.tsx";
+import {BoardList} from "./components/BoardList/BoardList.tsx";
+import {Board} from "./components/Board/Board.tsx";
+import {LeftOutlined} from "@ant-design/icons";
 
 export const App = () => {
   const [boards, setBoards] = useState<GetAllBoardsModel[]>();
+  const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
+
 
   useEffect(() => {
     handleGetAllBoards()
   }, []);
-
 
   const handleGetAllBoards = async () => {
     const res = await boardApi.getAllBoards()
@@ -23,84 +25,30 @@ export const App = () => {
     setBoards(res)
   }
 
-  const list: CSSProperties = {
-    width: '300px',
-    height: '100%'
+  const handleBoardSelect = (boardId: string) => {
+    const selected = boards?.find((board) => board.id === boardId) || null;
+
+    setSelectedBoard(selected)
   }
 
-  const listItem: CSSProperties = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-
-  const boardListWrapper: CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    justifyContent: "space-between"
-  }
-
-  const openBoardModal = () => {
-
+  const handleGoBack = () => {
+    setSelectedBoard(null);
   }
 
   return (
     <>
       <Layout style={layoutStyle}>
-        <MainHeader/>
+        <MainHeader onGoBack={handleGoBack}/>
+
+        {selectedBoard &&
+          <LeftOutlined style={goBack} onClick={handleGoBack}/>}
 
         <TopMenu/>
-
-        <Layout style={innerLayout}>
-          <div style={boardListWrapper}>
-            <List
-              bordered
-              style={list}
-              dataSource={boards}
-              renderItem={(board: GetAllBoardsModel) => (
-                <List.Item style={listItem} key={board.id}>
-                  {board.name}
-                </List.Item>)}
-            />
-
-            <DashedButton onClick={openBoardModal} />
-          </div>
-        </Layout>
-        {/*<Layout style={innerLayout}>*/}
-        {/*  <div style={column}>*/}
-        {/*    <h2>Todo</h2>*/}
-
-        {/*    <div style={cardWrapper}>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*    </div>*/}
-        {/*    <MainModal />*/}
-        {/*  </div>*/}
-
-        {/*  <div style={column}>*/}
-        {/*    <h2>In progress</h2>*/}
-
-        {/*    <div style={cardWrapper}>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-
-        {/*  <div style={column}>*/}
-        {/*    <h2>Done</h2>*/}
-
-        {/*    <div style={cardWrapper}>*/}
-        {/*      <CardItem/>*/}
-        {/*      <CardItem/>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</Layout>*/}
+        {
+          selectedBoard
+            ? <Board/>
+            : <BoardList boards={boards} onBoardSelect={handleBoardSelect}/>
+        }
       </Layout>
     </>
   )

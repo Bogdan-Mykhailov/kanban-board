@@ -1,13 +1,9 @@
 import React from 'react';
 import {DeleteOutlined, EditOutlined, } from '@ant-design/icons';
 import { Card } from 'antd';
+import {card} from "./CardItemStyle.ts";
 
 const { Meta } = Card;
-
-const card = {
-  width: 300,
-  marginBottom: 10
-}
 
 export const CardItem: React.FC = () => (
   <Card
