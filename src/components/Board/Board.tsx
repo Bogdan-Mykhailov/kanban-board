@@ -24,38 +24,12 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>();
 
-  const todoCards = cardsList && cardsList.map(card => card.ToDo)
-  const inProgressCards = cardsList && cardsList.map(card => card.InProgress)
-  const doneCards = cardsList && cardsList.map(card => card.Done)
-  const boardId = cardsList && cardsList?.find(card => card._id)
 
-  const handleEditTodoCard = (id: string) => {
-    const cardToEdit = cardsList?.flatMap(card => card.ToDo)
-      .find(card => card._id === id);
-    if (cardToEdit) {
-      setInputValue(cardToEdit.title);
-      setTextAreaValue(cardToEdit.description);
-      setSelectedCardId(id)
-    }
+  const allCards = cardsList?.flatMap(card => [...card.ToDo, ...card.InProgress, ...card.Done]);
+  const boardId = cardsList?.find(card => card._id)
 
-    setIsModalOpen(true);
-  };
-
-  const handleEditInProgressCard = (id: string) => {
-    const cardToEdit = cardsList?.flatMap(card => card.InProgress)
-      .find(card => card._id === id);
-    if (cardToEdit) {
-      setInputValue(cardToEdit.title);
-      setTextAreaValue(cardToEdit.description);
-      setSelectedCardId(id)
-    }
-
-    setIsModalOpen(true);
-  };
-
-  const handleEditDoneCard = (id: string) => {
-    const cardToEdit = cardsList?.flatMap(card => card.Done)
-      .find(card => card._id === id);
+  const handleEditCard = (id: string) => {
+    const cardToEdit = allCards?.find(card => card._id === id);
     if (cardToEdit) {
       setInputValue(cardToEdit.title);
       setTextAreaValue(cardToEdit.description);
@@ -77,7 +51,7 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
         .flatMap((card) => [...card.ToDo, ...card.InProgress, ...card.Done])
         .find((card) => card._id === selectedCardId);
 
-      const updatedCard = { ...currentCard, ...updatedData };
+      const updatedCard = {...currentCard, ...updatedData};
 
       await cardApi.updateCard(updatedCard, selectedCardId!);
       reloadCards();
@@ -112,20 +86,20 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
       .flatMap((card) => [...card.ToDo, ...card.InProgress, ...card.Done])
       .find((card) => card._id === selectedCardId);
 
-      try {
-          await cardApi.deleteCard(currentCard!._id, currentCard!.boardId);
-          reloadCards();
+    try {
+      await cardApi.deleteCard(currentCard!._id, currentCard!.boardId);
+      reloadCards();
 
-      } catch (error) {
-        console.log(error);
-      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
- const showModal2 = () => {
+  const showModal2 = () => {
     setIsModal2Open(true);
   };
 
@@ -143,7 +117,7 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
     setIsModalOpen(false);
   };
 
- const handleCancel2 = () => {
+  const handleCancel2 = () => {
     setIsModal2Open(false);
   };
 
@@ -212,15 +186,15 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
               autoSize={{minRows: 3, maxRows: 5}}
             />
           </MainModal>
-          {todoCards && todoCards.map(card => card.map(c => (
-            <CardItem
-              key={c._id}
-              title={c.title}
-              description={c.description}
-              onDeleteCard={() => handleDeleteCard(c._id)}
-              onUpdateCard={() => handleEditTodoCard(c._id)}
-            />
-          )))}
+          {allCards?.filter(card => card.status === CardStatus.TODO).map(c => (
+              <CardItem
+                key={createId()}
+                title={c.title}
+                description={c.description}
+                onDeleteCard={() => handleDeleteCard(c._id)}
+                onUpdateCard={() => handleEditCard(c._id)}
+              />
+            ))}
         </div>
       </div>
 
@@ -228,15 +202,15 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
         <h2>In progress</h2>
 
         <div style={cardWrapper}>
-          {inProgressCards && inProgressCards.map(card => card.map(c => (
+          {allCards?.filter(card => card.status === CardStatus.IN_PROGRESS).map(c => (
             <CardItem
               key={c._id}
               title={c.title}
               description={c.description}
               onDeleteCard={() => handleDeleteCard(c._id)}
-              onUpdateCard={() => handleEditInProgressCard(c._id)}
+              onUpdateCard={() => handleEditCard(c._id)}
             />
-          )))}
+          ))}
         </div>
       </div>
 
@@ -244,15 +218,15 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
         <h2>Done</h2>
 
         <div style={cardWrapper}>
-          {doneCards && doneCards.map(card => card.map(c => (
+          {allCards?.filter(card => card.status === CardStatus.DONE).map(c => (
             <CardItem
-              key={c._id}
+              key={createId()}
               title={c.title}
               description={c.description}
               onDeleteCard={() => handleDeleteCard(c._id)}
-              onUpdateCard={() => handleEditDoneCard(c._id)}
+              onUpdateCard={() => handleEditCard(c._id)}
             />
-          )))}
+          ))}
         </div>
       </div>
     </Layout>
