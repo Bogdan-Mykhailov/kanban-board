@@ -15,7 +15,6 @@ export const App = () => {
   const [cards, setCards] = useState<GetCardsByBoardIdModel[]>();
   const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
 
-
   useEffect(() => {
     handleGetAllBoards()
   }, []);
@@ -39,6 +38,10 @@ export const App = () => {
 
   const handleReloadCards = () => {
     handleGetAllCardsByBoardId(selectedBoard?._id)
+  }
+
+  const handleReloadBoards = () => {
+    handleGetAllBoards()
   }
 
   const handleSearch = (inputValue: string) => {
@@ -65,7 +68,7 @@ export const App = () => {
         {
           selectedBoard
             ? <Board cardsList={cards} reloadCards={handleReloadCards}/>
-            : <BoardList boards={boards} onBoardSelect={handleBoardSelect}/>
+            : <BoardList boards={boards} onBoardSelect={handleBoardSelect} handleReloadBoards={handleReloadBoards}/>
         }
       </Layout>
     </>

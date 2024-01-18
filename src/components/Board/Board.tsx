@@ -108,8 +108,6 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
   }
 
   const handleDeleteCard = async (selectedCardId: string) => {
-    console.log("selectedCardId:", selectedCardId);
-
     const currentCard = cardsList!
       .flatMap((card) => [...card.ToDo, ...card.InProgress, ...card.Done])
       .find((card) => card._id === selectedCardId);

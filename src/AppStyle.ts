@@ -30,10 +30,14 @@ export const listItem: CSSProperties = {
 };
 
 export const boardListWrapper: CSSProperties = {
+  width: '100%',
+  padding: 20,
   display: 'flex',
-  flexDirection: 'column',
+  flexWrap: 'wrap',
   height: '100%',
-  justifyContent: "space-between"
+  gap: 10,
+  justifyContent: "center",
+  overflow: 'scroll'
 };
 
 export const goBack: CSSProperties = {

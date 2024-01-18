@@ -7,10 +7,11 @@ export const dashedButton = {
 }
 
 export const dashedButtonGray = {
-  width: 298,
-  minHeight: 146,
+  minWidth: 300,
+  maxWidth: 370,
+  minHeight: 145,
   marginBottom: 10,
-  backgroundColor: 'transparent'
+  flex: 1
 }
 export const icon: CSSProperties = {
   fontSize: '48px',

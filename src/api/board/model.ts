@@ -19,3 +19,6 @@ export interface GetCardsByBoardIdModel {
   Done: CardModel[];
 }
 
+export interface CreateBoardModel {
+  name: string,
+}
