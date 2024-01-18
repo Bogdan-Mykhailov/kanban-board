@@ -37,6 +37,10 @@ export const App = () => {
     handleGetAllCardsByBoardId(selected?._id)
   }
 
+  const handleReloadCards = () => {
+    handleGetAllCardsByBoardId(selectedBoard?._id)
+  }
+
   const handleSearch = (inputValue: string) => {
     const filtered = boards && boards.find(board => board.name.toLowerCase().includes(inputValue.toLowerCase())) || null
     if (inputValue !== '') {
@@ -60,7 +64,7 @@ export const App = () => {
         </div>
         {
           selectedBoard
-            ? <Board cardsList={cards}/>
+            ? <Board cardsList={cards} reloadCards={handleReloadCards}/>
             : <BoardList boards={boards} onBoardSelect={handleBoardSelect}/>
         }
       </Layout>

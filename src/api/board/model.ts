@@ -1,3 +1,5 @@
+import {CardModel} from "../card/model.ts";
+
 interface ColumnsType {
   ToDo: string[];
   InProgress: string[];
@@ -8,20 +10,6 @@ export interface GetAllBoardsModel {
   _id: string,
   name: string,
   columns: ColumnsType
-}
-
-export enum CardStatus {
-  TODO = 'todo',
-  IN_PROGRESS = 'inProgress',
-  DONE = 'done',
-}
-
-export interface CardModel {
-  _id: string,
-  title: string,
-  description: string,
-  status: CardStatus,
-  boardId: string,
 }
 
 export interface GetCardsByBoardIdModel {

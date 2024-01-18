@@ -3,15 +3,16 @@ import {PlusOutlined} from "@ant-design/icons";
 import {FC} from "react";
 import {JSX} from "react/jsx-runtime";
 import IntrinsicAttributes = JSX.IntrinsicAttributes;
-import {dashedButton, icon} from "./DashedButtonStyle.ts";
+import {dashedButton, dashedButtonGray, icon} from "./DashedButtonStyle.ts";
 
 interface Props extends IntrinsicAttributes {
   onClick: () => void;
+  addBoardType: boolean
 }
 
-export const DashedButton: FC<Props> = ({ onClick }) => {
+export const DashedButton: FC<Props> = ({ onClick, addBoardType = false }) => {
   return (
-    <Button onClick={onClick} type="dashed" style={dashedButton}>
+    <Button onClick={onClick} type="dashed" style={addBoardType ? dashedButtonGray : dashedButton}>
       <PlusOutlined style={icon} />
     </Button>
   );

@@ -5,10 +5,12 @@ import {DashedButton} from "../DashedButton/DashedButton.tsx";
 interface Props {
   children: ReactNode;
   title: string;
-  showModal: () => void
-  handleOk: () => void
-  handleCancel: () => void
-  isModalOpen: boolean
+  showModal: () => void;
+  handleOk: () => void;
+  handleCancel: () => void;
+  isModalOpen: boolean;
+  withButton?: boolean;
+  addBoardType?: boolean
 }
 
 export const MainModal: React.FC<Props> = (
@@ -18,12 +20,15 @@ export const MainModal: React.FC<Props> = (
     showModal,
     isModalOpen,
     handleCancel,
-    handleOk
+    handleOk,
+    withButton = false,
+    addBoardType = false
   }) => {
 
   return (
     <>
-      <DashedButton onClick={showModal} />
+    {withButton &&
+      <DashedButton onClick={showModal} addBoardType={addBoardType} />}
       <Modal
         title={title}
         open={isModalOpen}
