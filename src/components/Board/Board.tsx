@@ -24,9 +24,11 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>();
 
+  const allCards = Array.isArray(cardsList)
+    ? cardsList.flatMap(card => [...card.todo, ...card.inProgress, ...card.done])
+    : [];
 
-  const allCards = cardsList?.flatMap(card => [...card.ToDo, ...card.InProgress, ...card.Done]);
-  const boardId = cardsList?.find(card => card._id)
+  const boardId = cardsList && cardsList.length > 0 ? cardsList[0]._id : '';
 
   const handleEditCard = (id: string) => {
     const cardToEdit = allCards?.find(card => card._id === id);
@@ -44,16 +46,14 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
       const updatedData = {
         title: inputValue,
         description: textAreaValue,
-        boardId: boardId
+        boardId: boardId,
       };
 
-      const currentCard = cardsList!
-        .flatMap((card) => [...card.ToDo, ...card.InProgress, ...card.Done])
-        .find((card) => card._id === selectedCardId);
+      const currentCard = allCards?.find((card) => card._id === selectedCardId);
 
-      const updatedCard = {...currentCard, ...updatedData};
+      const updatedCard = { ...currentCard, ...updatedData };
 
-      await cardApi.updateCard(updatedCard, selectedCardId!);
+      await cardApi.updateCard(updatedCard, selectedCardId!, boardId);
       reloadCards();
     } catch (error) {
       console.log(error);
@@ -67,23 +67,23 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
         title: createCardValue,
         description: createCardDescValue,
         status: CardStatus.TODO,
-        boardId: boardId
-      }
+        order: 0,
+        boardId: boardId,
+      };
 
-      setCreateCardValue('')
-      setCreateCardDescValue('')
+      setCreateCardValue("");
+      setCreateCardDescValue("");
 
       await cardApi.createCard(newCard, boardId);
-
       reloadCards();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleDeleteCard = async (selectedCardId: string) => {
     const currentCard = cardsList!
-      .flatMap((card) => [...card.ToDo, ...card.InProgress, ...card.Done])
+      .flatMap((card) => [...card.todo, ...card.inProgress, ...card.done])
       .find((card) => card._id === selectedCardId);
 
     try {

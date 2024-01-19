@@ -17,18 +17,6 @@ export const layoutStyle = {
   paddingBottom: '40px'
 };
 
-export const list: CSSProperties = {
-  width: '300px',
-  height: '100%'
-};
-
-export const listItem: CSSProperties = {
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  cursor: 'pointer'
-};
-
 export const boardListWrapper: CSSProperties = {
   width: '100%',
   padding: 20,
@@ -36,7 +24,6 @@ export const boardListWrapper: CSSProperties = {
   flexWrap: 'wrap',
   height: '100%',
   gap: 10,
-  justifyContent: "center",
   overflow: 'scroll'
 };
 

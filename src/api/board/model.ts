@@ -1,9 +1,9 @@
 import {CardModel} from "../card/model.ts";
 
 interface ColumnsType {
-  ToDo: string[];
-  InProgress: string[];
-  Done: string[];
+  todo: string[];
+  inProgress: string[];
+  done: string[];
 }
 
 export interface GetAllBoardsModel {
@@ -14,9 +14,9 @@ export interface GetAllBoardsModel {
 
 export interface GetCardsByBoardIdModel {
   _id: string;
-  ToDo: CardModel[];
-  InProgress: CardModel[];
-  Done: CardModel[];
+  todo: CardModel[];
+  inProgress: CardModel[];
+  done: CardModel[];
 }
 
 export interface CreateBoardModel {
