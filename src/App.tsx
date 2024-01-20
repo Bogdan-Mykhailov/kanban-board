@@ -15,8 +15,14 @@ export const App = () => {
   const [cards, setCards] = useState<GetCardsByBoardIdModel[]>();
   const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
 
+  const storedBoardId = localStorage.getItem('selectedBoardId');
+
   useEffect(() => {
-    handleGetAllBoards()
+    if (storedBoardId) {
+      handleGetAllCardsByBoardId(storedBoardId);
+    } else {
+      handleGetAllBoards();
+    }
   }, []);
 
   const handleGetAllBoards = async () => {
@@ -33,11 +39,12 @@ export const App = () => {
   const handleBoardSelect = (boardId: string) => {
     const selected = boards && boards?.filter((board) => board._id === boardId)[0] || null;
     setSelectedBoard(selected);
+    localStorage.setItem('selectedBoardId', boardId);
     handleGetAllCardsByBoardId(selected?._id)
   }
 
   const handleReloadCards = () => {
-    handleGetAllCardsByBoardId(selectedBoard?._id)
+    handleGetAllCardsByBoardId(storedBoardId!)
   }
 
   const handleReloadBoards = () => {
@@ -53,6 +60,8 @@ export const App = () => {
 
   const handleGoBack = () => {
     setSelectedBoard(null);
+    localStorage.removeItem('selectedBoardId');
+    handleGetAllBoards();
   }
 
   return (
@@ -61,12 +70,12 @@ export const App = () => {
         <MainHeader onGoBack={handleGoBack} selectedBoard={selectedBoard}/>
 
         <div style={menuWrapper}>
-          {selectedBoard &&
+          {storedBoardId &&
             <LeftOutlined style={goBack} onClick={handleGoBack}/>}
           <TopMenu onSearch={handleSearch}/>
         </div>
         {
-          selectedBoard
+          storedBoardId
             ? <Board cardsList={cards} reloadCards={handleReloadCards}/>
             : <BoardList boards={boards} onBoardSelect={handleBoardSelect} handleReloadBoards={handleReloadBoards}/>
         }
