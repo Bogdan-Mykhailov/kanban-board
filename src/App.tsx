@@ -40,7 +40,7 @@ export const App = () => {
     const selected = boards && boards?.filter((board) => board._id === boardId)[0] || null;
     setSelectedBoard(selected);
     localStorage.setItem('selectedBoardId', boardId);
-    handleGetAllCardsByBoardId(selected?._id)
+    handleGetAllCardsByBoardId(boardId)
   }
 
   const handleReloadCards = () => {
@@ -51,12 +51,14 @@ export const App = () => {
     handleGetAllBoards()
   }
 
-  const handleSearch = (inputValue: string) => {
-    const filtered = boards && boards.find(board => board.name.toLowerCase().includes(inputValue.toLowerCase())) || null
-    if (inputValue !== '') {
-      setSelectedBoard(filtered);
+  const handleSearchById = (boardId: string) => {
+    const foundBoard = boards && boards.find((board) => board._id === boardId);
+    if (foundBoard) {
+      setSelectedBoard(foundBoard);
+      localStorage.setItem('selectedBoardId', foundBoard._id);
+      handleGetAllCardsByBoardId(foundBoard._id);
     }
-  }
+  };
 
   const handleGoBack = () => {
     setSelectedBoard(null);
@@ -72,12 +74,18 @@ export const App = () => {
         <div style={menuWrapper}>
           {storedBoardId &&
             <LeftOutlined style={goBack} onClick={handleGoBack}/>}
-          <TopMenu onSearch={handleSearch}/>
+          <TopMenu onSearch={handleSearchById}/>
         </div>
         {
           storedBoardId
             ? <Board cardsList={cards} reloadCards={handleReloadCards}/>
-            : <BoardList boards={boards} onBoardSelect={handleBoardSelect} handleReloadBoards={handleReloadBoards}/>
+            : (
+              <BoardList
+                boards={boards}
+                onBoardSelect={handleBoardSelect}
+                handleReloadBoards={handleReloadBoards}
+              />
+            )
         }
       </Layout>
     </>
