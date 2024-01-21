@@ -1,19 +1,16 @@
 import {CardModel} from "../card/model.ts";
 
-interface ColumnsType {
+export interface GetAllBoardsModel {
+  _id: string,
+  name: string,
   todo: string[];
   inProgress: string[];
   done: string[];
 }
 
-export interface GetAllBoardsModel {
-  _id: string,
-  name: string,
-  columns: ColumnsType
-}
-
 export interface GetCardsByBoardIdModel {
   _id: string;
+  name: string;
   todo: CardModel[];
   inProgress: CardModel[];
   done: CardModel[];

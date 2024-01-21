@@ -1,6 +1,7 @@
 import {api} from "../api.ts";
 import {UploadCardModel} from "./model.ts";
 
+
 export const cardApi = {
   createCard: async (newCard: UploadCardModel, boardId: string) => {
     const response = await api.post<UploadCardModel>(`/board/${boardId}/card`, newCard);

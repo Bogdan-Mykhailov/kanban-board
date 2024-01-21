@@ -12,7 +12,7 @@ import {LeftOutlined} from "@ant-design/icons";
 
 export const App = () => {
   const [boards, setBoards] = useState<GetAllBoardsModel[]>();
-  const [cards, setCards] = useState<GetCardsByBoardIdModel[]>();
+  const [cards, setCards] = useState<GetCardsByBoardIdModel>();
   const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
 
   const storedBoardId = localStorage.getItem('selectedBoardId');
@@ -31,7 +31,7 @@ export const App = () => {
   }
 
   const handleGetAllCardsByBoardId = async (id?: string) => {
-    const res = await boardApi.getAllCardsByBoardId(id);
+    const res = await boardApi.getBoardById(id);
 
     setCards(res);
   }
@@ -74,7 +74,7 @@ export const App = () => {
         <div style={menuWrapper}>
           {storedBoardId &&
             <LeftOutlined style={goBack} onClick={handleGoBack}/>}
-          <TopMenu onSearch={handleSearchById}/>
+          {!storedBoardId && <TopMenu onSearch={handleSearchById}/>}
         </div>
         {
           storedBoardId

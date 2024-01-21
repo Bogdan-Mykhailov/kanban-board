@@ -14,8 +14,8 @@ export const boardApi = {
     return response.data;
   },
 
-  getAllCardsByBoardId: async (boardId: string | undefined) => {
-    const response = await api.get<GetCardsByBoardIdModel[]>(`/get-cards-by-board-id/${boardId}`);
+  getBoardById: async (boardId?: string) => {
+    const response = await api.get<GetCardsByBoardIdModel>(`/board/${boardId}`);
 
     return response.data;
   },

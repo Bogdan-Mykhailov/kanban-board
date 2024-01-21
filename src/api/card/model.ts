@@ -10,8 +10,9 @@ export interface CardModel {
 }
 
 export interface UploadCardModel {
+  _id?: string,
   title?: string,
   description?: string,
   status?: CardStatus,
-  boardId: string,
+  boardId?: string,
 }

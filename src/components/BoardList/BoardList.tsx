@@ -126,14 +126,15 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
         >
           <Input placeholder="Add board name" value={updatedValue} onChange={handleUpdateBoardChange} style={input}/>
         </MainModal>
-        {boards?.map((board: GetAllBoardsModel) => (
+        {boards && boards.map((board: GetAllBoardsModel) => (
           <BoardItem
             description={board._id}
             onOpenBoardCard={() => onBoardSelect(board._id)}
             key={board._id} title={board.name}
             onDeleteBoardCard={() => handleBoardDelete(board._id)}
             onUpdateBoardCard={() => handleEditCurrentBoard(board._id)}
-          />))}
+          />
+        ))}
       </div>
     </Layout>
   );
