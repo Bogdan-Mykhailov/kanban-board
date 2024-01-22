@@ -5,6 +5,7 @@ import {cardStyle, dragged} from "./CardItemStyle.ts";
 import {CSS} from "@dnd-kit/utilities";
 import {useSortable} from "@dnd-kit/sortable";
 import {CardModel} from "../../api/card/model.ts";
+import {CardStatus} from "../../types/types.ts";
 
 const {Meta} = Card;
 
@@ -34,9 +35,15 @@ export const CardItem: FC<Props> = ({card, onUpdateCard, onDeleteCard, isDraggin
     ...cardStyle
   }
 
+  const doneStyle = {
+    opacity: 0.4,
+    border: '1px dashed red',
+    ...cardStyle
+  }
+
   return (
     <Card
-      style={isDragging ? style : dragged}
+      style={status === CardStatus.DONE ? doneStyle : isDragging ? style : dragged}
       ref={setNodeRef}
       {...attributes}
       {...listeners}

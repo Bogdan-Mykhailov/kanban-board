@@ -1,5 +1,5 @@
 import Layout from "antd/lib/layout/layout";
-import {cardWrapper, column, innerLayout, input} from "./BoardStyle.ts";
+import {column, innerLayout, input} from "./BoardStyle.ts";
 import {MainModal} from "../Modal/MainModal.tsx";
 import {Input} from "antd";
 import TextArea from "antd/lib/input/TextArea";
@@ -22,13 +22,15 @@ import {
 import {arrayMove, SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import {CardModel} from "../../api/card/model.ts";
 import {createPortal} from "react-dom";
+import {Column} from "../Column/Column.tsx";
+import {cardWrapper} from "../Column/ColumnStyle.ts";
 
 interface Props {
-  cardsList?: GetCardsByBoardIdModel;
+  board?: GetCardsByBoardIdModel;
   reloadCards: () => void;
 }
 
-export const Board: FC<Props> = ({cardsList, reloadCards}) => {
+export const Board: FC<Props> = ({board, reloadCards}) => {
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: {
       distance: 3
@@ -36,29 +38,28 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
   }))
 
   useEffect(() => {
-    if (cardsList) {
-      const allCards = [...cardsList.todo, ...cardsList.inProgress, ...cardsList.done];
+    if (board) {
+      const allCards = [...board.todo, ...board.inProgress, ...board.done];
       setCards(allCards);
     }
-  }, [cardsList]);
+  }, [board]);
 
-  const todoCards = cardsList?.todo || [];
-  const inProgressCards = cardsList?.inProgress || [];
-  const doneCards = cardsList?.done || [];
-
+  const todoCards = board?.todo || [];
+  const inProgressCards = board?.inProgress || [];
+  const doneCards = board?.done || [];
   const allCards = [...todoCards, ...inProgressCards, ...doneCards];
-
   const [inputValue, setInputValue] = useState('');
   const [createCardValue, setCreateCardValue] = useState('');
   const [createCardDescValue, setCreateCardDescValue] = useState('');
   const [textAreaValue, setTextAreaValue] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModal2Open, setIsModal2Open] = useState(false);
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string>();
   const [currentCard, setCurrentCard] = useState<CardModel | null>(null);
+  const [currentColumn, setCurrentColumn] = useState<never | null>(null);
   const [cards, setCards] = useState<CardModel[]>(allCards);
-
-  const boardId = cardsList?._id;
+  const boardId = board?._id;
   const taskIds = allCards.map(card => card._id)
 
   const handleCreateCard = async () => {
@@ -81,6 +82,15 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
     }
   };
 
+  const handleRemoveCard = (id: string) => {
+    const cardToRemove = allCards?.find(card => card._id === id);
+    if (cardToRemove) {
+      setSelectedCardId(id)
+    }
+
+    setIsDeleteModalOpen(true);
+  };
+
   const handleEditCard = (id: string) => {
     const cardToEdit = allCards?.find(card => card._id === id);
     if (cardToEdit) {
@@ -89,7 +99,7 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
       setSelectedCardId(id)
     }
 
-    setIsModalOpen(true);
+    setIsModalUpdateOpen(true);
   };
 
   const handleUpdateCard = async () => {
@@ -119,30 +129,43 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
     }
   };
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showCreateModal = () => {
+    setIsModalCreateOpen(true);
   };
 
-  const showModal2 = () => {
-    setIsModal2Open(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-    handleUpdateCard();
-  };
-
-  const handleOk2 = () => {
-    setIsModal2Open(false);
+  const handleCreateCardOk = () => {
+    setIsModalCreateOpen(false);
     handleCreateCard();
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleCreateCancel = () => {
+    setIsModalCreateOpen(false);
   };
 
-  const handleCancel2 = () => {
-    setIsModal2Open(false);
+  const showUpdateModal = () => {
+    setIsModalUpdateOpen(true);
+  };
+
+  const handleUpdateCardOk = () => {
+    setIsModalUpdateOpen(false);
+    handleUpdateCard();
+  };
+
+  const handleUpdateCancel = () => {
+    setIsModalUpdateOpen(false);
+  };
+
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleOkDeleteModal = (selectedCardId: string) => {
+    setIsDeleteModalOpen(false);
+    handleDeleteCard(selectedCardId);
+  };
+
+  const handleCancelDeleteModal = () => {
+    setIsDeleteModalOpen(false);
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -162,13 +185,13 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
   }
 
   const onDragStart = (event: DragMoveEvent) => {
-
     if (event.active.data.current?.type === 'card') {
       setCurrentCard(event.active.data.current.card)
     }
   }
 
   const onDragEnd = async (event: DragMoveEvent) => {
+    setCurrentColumn(null)
     setCurrentCard(null)
 
     const {active, over} = event;
@@ -198,7 +221,7 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
 
     const updatedOrder = {
       order: allCards[overIndex]?.order,
-      status: allCards[overIndex].status,
+      status: allCards[overIndex]?.status,
       boardId: boardId
     };
 
@@ -224,54 +247,54 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
       return;
     }
 
-    const isActiveATask = active.data.current?.type === 'task';
-    const isOverATask = over.data.current?.type === 'task';
+    console.log(currentColumn)
+    const isActiveATask = active.data.current?.type === 'card';
+    const isOverAColumn = over.data.current?.type === 'column';
 
-    if (!isActiveATask) {
-      return;
-    }
+    if (isActiveATask && isOverAColumn && over.id) {
+      setCards((allCards) => {
+        const activeIndex = allCards?.findIndex((card) => card._id === activeCardId);
 
-    if (isActiveATask && isOverATask) {
-      setCards(allCards => {
-        const activeIndex = allCards?.findIndex(card => card._id === activeCardId);
-        const overIndex = allCards?.findIndex(card => card._id === overCardId);
+        const updatedStatus = {
+          status: over.id as CardStatus,
+          order: 0,
+          boardId: boardId,
+        };
 
-        // const updatedOrder = {
-        //   order: allCards[overIndex]?.order,
-        //   status: allCards[overIndex].status,
-        //   boardId: boardId,
-        // };
-        //
-        // (async () => {
-        //   try {
-        //     await cardApi.updateCard(updatedOrder, active.data.current?.card.id, boardId!);
-        //     reloadCards();
-        //   } catch (error) {
-        //     console.error(error);
-        //   }
-        // })();
+        (async () => {
+          try {
+            await cardApi.updateCard(updatedStatus, activeCardId.toString(), boardId!);
+            reloadCards();
+          } catch (error) {
+            console.error(error);
+          }
+        })();
 
-        return arrayMove(allCards!, activeIndex!, overIndex!);
+        return arrayMove(allCards!, activeIndex!, activeIndex!);
       });
     }
-
   };
 
   return (
-    <DndContext onDragOver={onDragOver} sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart}
-                onDragEnd={onDragEnd}>
+    <DndContext
+      onDragOver={onDragOver}
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <Layout style={innerLayout}>
           <div style={column}>
             <h2>Todo</h2>
 
-            <div style={cardWrapper}>
+            <div id={CardStatus.TODO} style={cardWrapper}>
               <MainModal
-                showModal={showModal}
-                title='Update Card'
-                handleOk={handleOk}
-                handleCancel={handleCancel}
-                isModalOpen={isModalOpen}
+                showModal={showUpdateModal}
+                title='Update Task'
+                handleOk={handleUpdateCardOk}
+                handleCancel={handleUpdateCancel}
+                isModalOpen={isModalUpdateOpen}
               >
                 <Input
                   placeholder="Add title"
@@ -289,11 +312,11 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
               </MainModal>
               <MainModal
                 withButton
-                showModal={showModal2}
-                title='Create Card'
-                handleOk={handleOk2}
-                handleCancel={handleCancel2}
-                isModalOpen={isModal2Open}
+                showModal={showCreateModal}
+                title='Create Task'
+                handleOk={handleCreateCardOk}
+                handleCancel={handleCreateCancel}
+                isModalOpen={isModalCreateOpen}
               >
                 <Input
                   placeholder="Add title"
@@ -309,49 +332,44 @@ export const Board: FC<Props> = ({cardsList, reloadCards}) => {
                   autoSize={{minRows: 3, maxRows: 5}}
                 />
               </MainModal>
-
-              {cards?.filter(card => card.status === CardStatus.TODO).map(c => (
-                <CardItem
-                  isDragging
-                  card={c}
-                  key={c._id}
-                  onDeleteCard={() => handleDeleteCard(c._id)}
-                  onUpdateCard={() => handleEditCard(c._id)}
-                />
-              ))}
+              <MainModal
+                showModal={openDeleteModal}
+                title='Delete Task'
+                handleOk={() => handleOkDeleteModal(selectedCardId!)}
+                handleCancel={handleCancelDeleteModal}
+                isModalOpen={isDeleteModalOpen}
+              >
+                <h4>Do you Want to delete these task?</h4>
+                <p>id: {selectedCardId}</p>
+              </MainModal>
+              <Column
+                columnStatus={CardStatus.TODO}
+                cards={cards}
+                handleDeleteCard={handleRemoveCard}
+                handleEditCard={handleEditCard}
+              />
             </div>
           </div>
 
           <div style={column}>
             <h2>In progress</h2>
-
-            <div style={cardWrapper}>
-              {cards?.filter(card => card.status === CardStatus.IN_PROGRESS).map(c => (
-                <CardItem
-                  isDragging
-                  card={c}
-                  key={c._id}
-                  onDeleteCard={() => handleDeleteCard(c._id)}
-                  onUpdateCard={() => handleEditCard(c._id)}
-                />
-              ))}
-            </div>
+            <Column
+              columnStatus={CardStatus.IN_PROGRESS}
+              cards={cards}
+              handleDeleteCard={handleRemoveCard}
+              handleEditCard={handleEditCard}
+            />
           </div>
 
           <div style={column}>
             <h2>Done</h2>
 
-            <div style={cardWrapper}>
-              {cards?.filter(card => card.status === CardStatus.DONE).map(c => (
-                <CardItem
-                  isDragging
-                  card={c}
-                  key={c._id}
-                  onDeleteCard={() => handleDeleteCard(c._id)}
-                  onUpdateCard={() => handleEditCard(c._id)}
-                />
-              ))}
-            </div>
+            <Column
+              columnStatus={CardStatus.DONE}
+              cards={cards}
+              handleDeleteCard={handleRemoveCard}
+              handleEditCard={handleEditCard}
+            />
           </div>
         </Layout>
         {createPortal(<DragOverlay>

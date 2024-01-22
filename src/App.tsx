@@ -73,12 +73,12 @@ export const App = () => {
 
         <div style={menuWrapper}>
           {storedBoardId &&
-            <LeftOutlined style={goBack} onClick={handleGoBack}/>}
+            <LeftOutlined title='Back' style={goBack} onClick={handleGoBack}/>}
           {!storedBoardId && <TopMenu onSearch={handleSearchById}/>}
         </div>
         {
           storedBoardId
-            ? <Board cardsList={cards} reloadCards={handleReloadCards}/>
+            ? <Board board={cards} reloadCards={handleReloadCards}/>
             : (
               <BoardList
                 boards={boards}

@@ -1,7 +1,7 @@
 export const cardStyle = {
   width: 300,
   marginBottom: 10,
-  cursor: 'move',
+  cursor: 'pointer',
 }
 
 export const dragged = {
