@@ -29,7 +29,7 @@ export const boardListWrapper: CSSProperties = {
 
 export const goBack: CSSProperties = {
   position: 'absolute',
-  left: -150,
+  left: -50,
   top: 46,
   fontSize: '28px',
   color: '#1890ff'
