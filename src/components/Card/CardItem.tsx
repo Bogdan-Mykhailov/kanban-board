@@ -16,10 +16,28 @@ interface Props {
   isDragging?: boolean;
 }
 
-export const CardItem: FC<Props> = ({card, onUpdateCard, onDeleteCard, isDragging}) => {
-  const {title, description, _id, status, order} = card;
+export const CardItem: FC<Props> = (
+  {
+    card,
+    onUpdateCard,
+    onDeleteCard,
+    isDragging
+  }) => {
+  const {
+    title,
+    description,
+    _id,
+    status,
+    order
+  } = card;
 
-  const {attributes, listeners, setNodeRef, transition, transform} = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transition,
+    transform
+  } = useSortable({
     id: _id,
     data: {
       type: 'card',
@@ -43,7 +61,9 @@ export const CardItem: FC<Props> = ({card, onUpdateCard, onDeleteCard, isDraggin
 
   return (
     <Card
-      style={status === CardStatus.DONE ? doneStyle : isDragging ? style : dragged}
+      style={status === CardStatus.DONE
+        ? doneStyle : isDragging
+          ? style : dragged}
       ref={setNodeRef}
       {...attributes}
       {...listeners}

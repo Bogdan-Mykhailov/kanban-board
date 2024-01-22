@@ -37,7 +37,7 @@ export const App = () => {
   }
 
   const handleBoardSelect = (boardId: string) => {
-    const selected = boards && boards?.filter((board) => board._id === boardId)[0] || null;
+    const selected = boards?.filter((board) => board._id === boardId)[0] || null;
     setSelectedBoard(selected);
     localStorage.setItem('selectedBoardId', boardId);
     handleGetAllCardsByBoardId(boardId)
@@ -52,7 +52,8 @@ export const App = () => {
   }
 
   const handleSearchById = (boardId: string) => {
-    const foundBoard = boards && boards.find((board) => board._id === boardId);
+    const foundBoard = boards && boards
+      .find((board) => board._id === boardId);
     if (foundBoard) {
       setSelectedBoard(foundBoard);
       localStorage.setItem('selectedBoardId', foundBoard._id);
@@ -69,11 +70,18 @@ export const App = () => {
   return (
     <>
       <Layout style={layoutStyle}>
-        <MainHeader onGoBack={handleGoBack} selectedBoard={selectedBoard}/>
+        <MainHeader
+          onGoBack={handleGoBack}
+          selectedBoard={selectedBoard}
+        />
 
         <div style={menuWrapper}>
           {storedBoardId &&
-            <LeftOutlined title='Back' style={goBack} onClick={handleGoBack}/>}
+            <LeftOutlined
+              title='Back'
+              style={goBack}
+              onClick={handleGoBack}
+            />}
           {!storedBoardId && <TopMenu onSearch={handleSearchById}/>}
         </div>
         {

@@ -5,8 +5,9 @@ import Layout from "antd/lib/layout/layout";
 import {ChangeEvent, FC, useState} from "react";
 import {MainModal} from "../Modal/MainModal.tsx";
 import {input} from "./BoardListStyle.ts";
-import {BoardItem} from "../BoardItem/BoardItem.tsx";
 import {boardApi} from "../../api/board/board.ts";
+import {BoardItem} from "../BoardItem/BoardItem.tsx";
+import {CardSkeleton} from "../CardSkeleton/CardSkeleton.tsx";
 
 interface Props {
   boards?: GetAllBoardsModel[];
@@ -21,9 +22,11 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
   const [updatedValue, setUpdatedValue] = useState('');
   const [selectedBoardId, setSelectedBoardId] = useState<string>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateBoard = async () => {
     try {
+      setIsLoading(true)
       const newBoard = {
         name: value
       }
@@ -31,6 +34,7 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
       await boardApi.createBoard(newBoard)
       setValue('')
       handleReloadBoards()
+      setIsLoading(false)
     } catch (error) {
       console.log(error)
     }
@@ -41,18 +45,20 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
     if (currentBoard) {
       setSelectedBoardId(id)
     }
-      setIsDeleteModalOpen(true);
+    setIsDeleteModalOpen(true);
   };
 
   const handleBoardUpdate = async (selectedBoardId: string) => {
     const currentBoard = boards?.find(board => board._id === selectedBoardId)
     try {
+      setIsLoading(true)
       const updatedData = {
         name: updatedValue
       }
 
       await boardApi.updateBoard(currentBoard!._id, updatedData);
       handleReloadBoards();
+      setIsLoading(false)
     } catch (error) {
       console.log(error)
     }
@@ -140,7 +146,12 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
           handleCancel={handleCancel}
           handleOk={handleOk}
         >
-          <Input placeholder="Add board name" value={value} onChange={handleCreateBoardChange} style={input}/>
+          <Input
+            placeholder="Add board name"
+            value={value}
+            onChange={handleCreateBoardChange}
+            style={input}
+          />
         </MainModal>
         <MainModal
           title='Update Board'
@@ -149,7 +160,12 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
           handleCancel={handleCancelUpdateModal}
           handleOk={handleOkUpdateModal}
         >
-          <Input placeholder="Add board name" value={updatedValue} onChange={handleUpdateBoardChange} style={input}/>
+          <Input
+            placeholder="Add board name"
+            value={updatedValue}
+            onChange={handleUpdateBoardChange}
+            style={input}
+          />
         </MainModal>
         <MainModal
           showModal={openDeleteModal}
@@ -161,17 +177,31 @@ export const BoardList: FC<Props> = ({boards, onBoardSelect, handleReloadBoards}
           <h4>Do you Want to delete these board?</h4>
           <p>id: {selectedBoardId}</p>
         </MainModal>
-        {boards && boards.map((board: GetAllBoardsModel) => (
-          <BoardItem
-            boardId={board._id}
-            description={board._id}
-            onOpenBoardCard={() => onBoardSelect(board._id)}
-            key={board._id} title={board.name}
-            onDeleteBoardCard={handleRemoveBoard}
-            onUpdateBoardCard={() => handleEditCurrentBoard(board._id)}
-          />
-        ))}
+        {
+          isLoading
+            ? <>
+              {boards?.map(board => (
+                <CardSkeleton key={board._id}/>
+              ))}
+            </>
+            : <>
+              {boards && boards.map((board: GetAllBoardsModel) => {
+                return (
+                  <BoardItem
+                    boardId={board._id}
+                    description={board._id}
+                    onOpenBoardCard={() => onBoardSelect(board._id)}
+                    key={board._id}
+                    title={board.name}
+                    onDeleteBoardCard={handleRemoveBoard}
+                    onUpdateBoardCard={() => handleEditCurrentBoard(board._id)}
+                  />
+                )
+              })}
+            </>
+        }
       </div>
     </Layout>
-  );
+  )
+    ;
 };

@@ -12,7 +12,11 @@ interface Props extends IntrinsicAttributes {
 
 export const DashedButton: FC<Props> = ({ onClick, addBoardType = false }) => {
   return (
-    <Button onClick={onClick} type="dashed" style={addBoardType ? dashedButtonGray : dashedButton}>
+    <Button
+      onClick={onClick}
+      type="dashed"
+      style={addBoardType ? dashedButtonGray : dashedButton}
+    >
       <PlusOutlined style={icon} />
     </Button>
   );

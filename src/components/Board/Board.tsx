@@ -218,19 +218,6 @@ export const Board: FC<Props> = ({board, reloadCards}) => {
 
       return arrayMove(allCards!, activeIndex!, overIndex!)
     })
-
-    const updatedOrder = {
-      order: allCards[overIndex]?.order,
-      status: allCards[overIndex]?.status,
-      boardId: boardId
-    };
-
-    try {
-      await cardApi.updateCard(updatedOrder, activeCardId.toString(), boardId!);
-      reloadCards();
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const onDragOver = async (event: DragOverEvent) => {
@@ -324,7 +311,6 @@ export const Board: FC<Props> = ({board, reloadCards}) => {
                   onChange={handleCreateCardInputChange}
                   style={input}
                 />
-
                 <TextArea
                   value={createCardDescValue}
                   onChange={handleCreateCardDescChange}
@@ -363,7 +349,6 @@ export const Board: FC<Props> = ({board, reloadCards}) => {
 
           <div style={column}>
             <h2>Done</h2>
-
             <Column
               columnStatus={CardStatus.DONE}
               cards={cards}

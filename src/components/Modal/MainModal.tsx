@@ -27,8 +27,13 @@ export const MainModal: React.FC<Props> = (
 
   return (
     <>
-    {withButton &&
-      <DashedButton onClick={showModal} addBoardType={addBoardType} />}
+    {
+      withButton
+      && <DashedButton
+        onClick={showModal}
+        addBoardType={addBoardType}
+      />
+    }
       <Modal
         title={title}
         open={isModalOpen}
