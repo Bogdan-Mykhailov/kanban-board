@@ -1,4 +1,4 @@
-import {DeleteOutlined, EditOutlined, EnterOutlined} from '@ant-design/icons';
+import {DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Card, Skeleton} from 'antd';
 
 const {Meta} = Card;
@@ -9,7 +9,6 @@ export const CardSkeleton = () => {
     <Card
       style={{width: 300, height: 145}}
       actions={[
-        <EnterOutlined key="setting"/>,
         <EditOutlined key="edit"/>,
         <DeleteOutlined key="ellipsis"/>,
       ]}

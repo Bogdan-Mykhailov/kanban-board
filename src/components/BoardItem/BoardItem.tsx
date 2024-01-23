@@ -1,4 +1,4 @@
-import {DeleteOutlined, EditOutlined, EnterOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import {Card} from "antd";
 import {boardCard} from "./BoardItemStyle.ts";
 import {FC} from "react";
@@ -24,9 +24,9 @@ export const BoardItem: FC<Props> = (
   }) => {
   return (
     <Card
+      onDoubleClick={onOpenBoardCard}
       style={boardCard}
       actions={[
-        <EnterOutlined onClick={onOpenBoardCard} key="enter"/>,
         <EditOutlined onClick={onUpdateBoardCard} key="edit"/>,
         <DeleteOutlined onClick={() => onDeleteBoardCard(boardId)} key="delete"/>
       ]}

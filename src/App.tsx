@@ -6,15 +6,16 @@ import {goBack, layoutStyle, menuWrapper} from "./AppStyle.ts";
 import {useEffect, useState} from "react";
 import {boardApi} from "./api/board/board.ts";
 import {GetAllBoardsModel, GetCardsByBoardIdModel} from "./api/board/model.ts";
-import {BoardList} from "./components/BoardList/BoardList.tsx";
 import {Board} from "./components/Board/Board.tsx";
 import {LeftOutlined} from "@ant-design/icons";
+import {Spin} from "antd";
+import {BoardList} from "./components/BoardList/BoardList.tsx";
 
 export const App = () => {
   const [boards, setBoards] = useState<GetAllBoardsModel[]>();
   const [cards, setCards] = useState<GetCardsByBoardIdModel>();
   const [selectedBoard, setSelectedBoard] = useState<GetAllBoardsModel | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const storedBoardId = localStorage.getItem('selectedBoardId');
 
   useEffect(() => {
@@ -26,8 +27,15 @@ export const App = () => {
   }, []);
 
   const handleGetAllBoards = async () => {
-    const res = await boardApi.getAllBoards();
-    setBoards(res);
+    try {
+      setIsLoading(true)
+      const res = await boardApi.getAllBoards();
+
+      setBoards(res);
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleGetAllCardsByBoardId = async (id?: string) => {
@@ -88,13 +96,16 @@ export const App = () => {
           storedBoardId
             ? <Board board={cards} reloadCards={handleReloadCards}/>
             : (
-              <BoardList
-                boards={boards}
-                onBoardSelect={handleBoardSelect}
-                handleReloadBoards={handleReloadBoards}
-              />
+              <>
+                <BoardList
+                  boards={boards}
+                  onBoardSelect={handleBoardSelect}
+                  handleReloadBoards={handleReloadBoards}
+                />
+              </>
             )
         }
+        {isLoading && <Spin style={{position: 'absolute', bottom: 150}} size="large"></Spin>}
       </Layout>
     </>
   )
